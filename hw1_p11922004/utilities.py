@@ -85,6 +85,7 @@ def get_filter(
         )
         filter = np.append(new_filter, filter, axis=0)
         filter = np.append(filter, new_filter, axis=0)
+    print(filter)
     return filter
 
 def low_pass_filter(
@@ -93,6 +94,7 @@ def low_pass_filter(
         base=2,
         pow=3
 ):
+    img = np.array(img)
     expend = math.floor(filtersize/2)
     width = img.shape[1]
     height = img.shape[0]
@@ -151,7 +153,7 @@ def get_psnr(img1, img2):
     mse = 0
     for (i, row) in enumerate(img1):
         for (j, pixel) in enumerate(row):
-            mse += math.pow(img1[i][j] - img2[i][j], 2)
+            mse += math.pow(int(img1[i][j]) - int(img2[i][j]), 2)
     mse /= width * height
     psnr = 10 * math.log10(math.pow(255, 2) / mse)
     return psnr

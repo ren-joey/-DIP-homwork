@@ -12,7 +12,6 @@ from utilities import \
                     median_filter, \
                     get_psnr
 
-
 # ============================================================
 # ==================== Problem 0: Warn Up ====================
 # ============================================================
@@ -176,22 +175,146 @@ print()
 # Please also provide some discussions about the reason why those filters and parameters are chosen.
 
 img3 = cv2.imread('./hw1_sample_images/sample3.png', cv2.IMREAD_GRAYSCALE)
+img3 = np.array(img3)
 img4 = cv2.imread('./hw1_sample_images/sample4.png', cv2.IMREAD_GRAYSCALE)
+img4 = np.array(img4)
 img5 = cv2.imread('./hw1_sample_images/sample5.png', cv2.IMREAD_GRAYSCALE)
+img5 = np.array(img5)
 
-result12 = low_pass_filter(img4, filtersize=3, base=4, pow=4)
-cv2.imwrite('./result12.png', result12)
+result12 = low_pass_filter(img4, filtersize=3, base=2, pow=2)
+result12a = low_pass_filter(img4, filtersize=3, base=2, pow=3)
+result12b = low_pass_filter(img4, filtersize=5, base=2, pow=4)
+result12c = low_pass_filter(img4, filtersize=7, base=2, pow=5)
+result12d = median_filter(img4, filtersize=5, crossmode=True)
+cv2.imwrite('./result12.png', result12b)
 
-result13 = median_filter(img5, filtersize=5, crossmode=True)
+matplotlib.rc('font', **{'size': 4})
+plt.figure(dpi=300)
+plt.subplot(1, 5, 1)
+plt.title('3x3-2^2')
+plt.imshow(result12, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 5, 2)
+plt.title('3x3-2^3')
+plt.imshow(result12a, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 5, 3)
+plt.title('5x5-2^4')
+plt.imshow(result12b, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 5, 4)
+plt.title('7x7-2^5')
+plt.imshow(result12c, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 5, 5)
+plt.title('5x5-cross')
+plt.imshow(result12d, cmap='gray')
+plt.axis('off')
+plt.show()
+plt.close()
+
+result12e = low_pass_filter(img4, filtersize=3, base=3, pow=3)
+result12f = low_pass_filter(img4, filtersize=5, base=3, pow=3)
+result12g = low_pass_filter(img4, filtersize=5, base=4, pow=3)
+result12h = low_pass_filter(img4, filtersize=5, base=5, pow=3)
+
+matplotlib.rc('font', **{'size': 4})
+plt.figure(dpi=300)
+plt.subplot(1, 4, 1)
+plt.title('3x3-3^3')
+plt.imshow(result12e, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 4, 2)
+plt.title('5x5-3^3')
+plt.imshow(result12f, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 4, 3)
+plt.title('5x5-4^3')
+plt.imshow(result12g, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 4, 4)
+plt.title('5x5-5^3')
+plt.imshow(result12h, cmap='gray')
+plt.axis('off')
+plt.show()
+plt.close()
+
+result13 = median_filter(img5, filtersize=3, crossmode=False)
+result13a = median_filter(img5, filtersize=5, crossmode=True)
+result13b = median_filter(img5, filtersize=5, crossmode=False)
+result13c = median_filter(img5, filtersize=7, crossmode=True)
+result13d = median_filter(img5, filtersize=7, crossmode=False)
+result13e = median_filter(img5, filtersize=9, crossmode=True)
+result13f = low_pass_filter(img5, filtersize=5, base=2, pow=4)
 cv2.imwrite('./result13.png', result13)
 
-psnr12 = get_psnr(img3, result12)
-psnr13 = get_psnr(img3, result13)
+matplotlib.rc('font', **{'size': 4})
+plt.figure(dpi=300)
+plt.subplot(2, 4, 1)
+plt.title('3x3')
+plt.imshow(result13, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 5)
+plt.title('5x5-cross')
+plt.imshow(result13a, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 2)
+plt.title('5x5')
+plt.imshow(result13b, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 6)
+plt.title('7x7-cross')
+plt.imshow(result13c, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 3)
+plt.title('7x7')
+plt.imshow(result13d, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 7)
+plt.title('9x9-cross')
+plt.imshow(result13e, cmap='gray')
+plt.axis('off')
+plt.subplot(2, 4, 4)
+plt.title('5x5-2^4')
+plt.imshow(result13f, cmap='gray')
+plt.axis('off')
+plt.show()
+plt.close()
 
+# psnr12 = get_psnr(img3, result12)
+# psnr13 = get_psnr(img3, result13)
+
+psnr1 = get_psnr(img3, result12)
+psnr2 = get_psnr(img3, result12a)
+psnr3 = get_psnr(img3, result12b)
+psnr4 = get_psnr(img3, result12c)
+psnr5 = get_psnr(img3, result12d)
+
+print(psnr1, psnr2, psnr3, psnr4, psnr5)
+
+psnr6 = get_psnr(img3, result12e)
+psnr7 = get_psnr(img3, result12f)
+psnr8 = get_psnr(img3, result12g)
+psnr9 = get_psnr(img3, result12h)
+
+print(psnr6, psnr7, psnr8, psnr9)
+
+print(
+    get_psnr(img3, result13),
+    get_psnr(img3, result13a),
+    get_psnr(img3, result13b),
+    get_psnr(img3, result13c),
+    get_psnr(img3, result13d),
+    get_psnr(img3, result13e),
+    get_psnr(img3, result13f),
+)
+
+print(
+    get_psnr(img3, img4),
+    get_psnr(img3, img5)
+)
 
 # (b) (10 pt) In noise removal problems,
 # PSNR is a widely used metric to present the quality of your recovered image.
 # Please compute PSNR values of result12.png and result13.png, respectively,
 # and provide some discussions.
-
-print()
