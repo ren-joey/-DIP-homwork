@@ -11,6 +11,7 @@ def plot_histograms(
     titles=['Histogram'],
     filename='histograms.png',
 ):
+    plt.figure(dpi=200)
     for (idx, img) in enumerate(imgs):
         plt.subplot(len(imgs), 1, idx + 1)
         plt.hist(img.flatten(), 256, [0, 255])
@@ -30,6 +31,7 @@ def plot_histogram(
     title='Histogram',
     filename='histogram.png',
 ):
+    plt.figure(dpi=200)
     plt.hist(img.flatten(), 256, [0, 255])
     plt.title(title)
     plt.xlabel(xlabel)
@@ -91,6 +93,7 @@ def low_pass_filter(
         base=2,
         pow=3
 ):
+    img = np.array(img)
     expend = math.floor(filtersize/2)
     width = img.shape[1]
     height = img.shape[0]
@@ -142,3 +145,14 @@ def median_filter(
             median = flat[math.ceil(len(flat) / 2)]
             G[i - expend][j - expend] = median
     return G
+
+def get_psnr(img1, img2):
+    height = img1.shape[0]
+    width = img1.shape[1]
+    mse = 0
+    for (i, row) in enumerate(img1):
+        for (j, pixel) in enumerate(row):
+            mse += math.pow(int(img1[i][j]) - int(img2[i][j]), 2)
+    mse /= width * height
+    psnr = 10 * math.log10(math.pow(255, 2) / mse)
+    return psnr

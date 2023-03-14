@@ -2,13 +2,15 @@ import math
 
 import cv2
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 from utilities import \
                     plot_histograms,\
                     plot_histogram, \
                     plot_ghe, \
                     low_pass_filter, \
-                    median_filter
-
+                    median_filter, \
+                    get_psnr
 
 # ============================================================
 # ==================== Problem 0: Warn Up ====================
@@ -18,7 +20,12 @@ img = cv2.imread('./hw1_sample_images/sample1.png')
 img = np.array(img)
 
 # (a) convert sample1.png to a gray-scaled image named result1.png.
-# formula: 0.2989 * R + 0.5870 * G + 0.1140 * B
+# Grayscale transformation formula applied
+# lightness: 			        	    (max(R, G, B) + min(R, G, B)) / 2.
+# average: 			                	(R + G + B) / 3
+# person’s perception of brightness:  	0.2989 * R + 0.5870 * G + 0.1140 * B
+# luminosity: 			            	0.21 R + 0.72 G + 0.07 B
+img = np.array(img)
 for row in img:
     for (idx, pixel) in enumerate(row):
         row[idx] = np.sum(
@@ -28,9 +35,10 @@ cv2.imwrite('./result1.png', img)
 
 # (b) Perform vertical flipping on result1.png and output the result as result2.png
 height = img.shape[0]
-for i in range(math.floor(height / 2)):
-    img[i], img[-i] = np.copy(img[-i]), np.copy(img[i])
-cv2.imwrite('./result2.png', img)
+G = np.full(img.shape, 0)
+for i in range(math.ceil(height / 2) + 1):
+    G[i], G[-i] = img[-i], img[i]
+cv2.imwrite('./result2.png', G)
 
 # ============================================================
 # =============== Problem 1: IMAGE ENHANCEMENT ===============
@@ -60,14 +68,9 @@ cv2.imwrite('./result4.png', img2b)
 # What can you observe from these three histograms?
 plot_histograms(
     imgs=[img2, img2a, img2b],
-    titles=['histogram2', 'histogram2a', 'histogram2b'],
+    titles=['original histogram', 'P/3', 'P/3*3'],
     filename='histograms.png'
 )
-
-histogram2, histogram2a, histogram2b = \
-                                    np.full(256, 0), \
-                                    np.full(256, 0), \
-                                    np.full(256, 0)
 
 # (d) (10 pt) Perform global histogram equalization on sample2.png,
 # result3.png and result4.png, and output the results as result5.png, result6.png and result7.png, respectively.
@@ -83,7 +86,7 @@ cv2.imwrite('./result7.png', G7)
 
 plot_histograms(
     imgs=[G5, G6, G7],
-    titles=['result5_histogram', 'result6_histogram', 'result7_histogram'],
+    titles=['original GHE', 'P/3 GHE', 'P/3*3 GHE'],
     filename='GHE_histograms.png'
 )
 
@@ -125,4 +128,18 @@ cv2.imwrite('./result13.png', result13)
 # Please compute PSNR values of result12.png and result13.png, respectively,
 # and provide some discussions.
 
-print()
+print(
+    # evaluate PSNR
+    # clean image & uniform noise image
+    get_psnr(img3, img4),
+    # clean image & Salt-and-pepper image
+    get_psnr(img3, img5)
+)
+
+print(
+    # evaluate PSNR
+    # clean image & low-pass-filter image
+    get_psnr(img3, result12),
+    # clean image & median-filter image
+    get_psnr(img3, result13),
+)
