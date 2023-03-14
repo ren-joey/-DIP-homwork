@@ -8,9 +8,11 @@ from utilities import \
                     plot_histograms,\
                     plot_histogram, \
                     plot_ghe, \
+                    get_parametric_img, \
                     low_pass_filter, \
                     median_filter, \
-                    get_psnr
+                    get_psnr, \
+                    plot_lhe
 
 # ============================================================
 # ==================== Problem 0: Warn Up ====================
@@ -72,8 +74,8 @@ plot_histograms(
     filename='histograms.png'
 )
 
-# (d) (10 pt) Perform global histogram equalization on sample2.png,
-# result3.png and result4.png, and output the results as result5.png, result6.png and result7.png, respectively.
+# (d) (10 pt) Perform global histogram equalization on sample2.png, result3.png and result4.png,
+# and output the results as result5.png, result6.png and result7.png, respectively.
 # Please compare these three resultant images and plot their histograms.
 G5 = plot_ghe(img2)
 cv2.imwrite('./result5.png', G5)
@@ -94,14 +96,27 @@ plot_histograms(
 # and output the results as result8.png, result9.png and result10.png, respectively.
 # Please compare these three resultant images and plot their histograms.
 
-print()
+G8 = plot_lhe(img2)
+cv2.imwrite('./result8.png', G8)
+
+G9 = plot_lhe(img2a)
+cv2.imwrite('./result9.png', G9)
+
+G10 = plot_lhe(img2b)
+cv2.imwrite('./result10.png', G10)
+
+plot_histograms(
+    imgs=[G8, G9, G10],
+    titles=['original LHE', 'P/3 LHE', 'P/3*3 LHE'],
+    filename='LHE_histograms.png'
+)
 
 # (f) (10 pt) Design a transfer function to enhance sample2.png and output the result as result11.png.
 # Try your best to obtain the most appealing result by adjusting the parameters.
 # Show the parameters, the best resultant image and its corresponding histogram.
 # Provide some discussions on the result as well.
-
-print()
+parametric_img = get_parametric_img(G5)
+cv2.imwrite('./result11.png', parametric_img)
 
 # ============================================================
 # ================= Problem 2: NOISE REMOVAL =================

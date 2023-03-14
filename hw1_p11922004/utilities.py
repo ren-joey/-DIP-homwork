@@ -64,6 +64,42 @@ def plot_ghe(img):
             )
     return G
 
+# Reference
+# http://ccy.dd.ncu.edu.tw/~chen/course/vision/ch2/ans02.pdf
+def plot_lhe(img):
+    img = np.array(img)
+    expend = 1
+    width = img.shape[1]
+    height = img.shape[0]
+    G = np.full([height, width], 0)
+    for i in range(expend):
+        img = np.append(img[1:2, :], img, axis=0)
+        img = np.append(img, img[-2:-1, :], axis=0)
+    for i in range(expend):
+        img = np.append(img[:, 1:2], img, axis=1)
+        img = np.append(img, img[:, -2:-1], axis=1)
+
+    for i in range(expend, expend + height):
+        for j in range(expend, expend + width):
+            filter = img[i - 1:i + 2, j - 1:j + 2].flatten()
+            rank = (img[i][j] > filter).sum()
+            max = np.max(filter)
+            graylevel = rank * max
+            G[i - expend][j - expend] = graylevel if graylevel <= 255 else 255
+    return G
+def parametric(data):
+    x = data / 255
+    ratio = math.sqrt(1 - math.pow(x - 1, 2))
+    ratio = -(math.cos(math.pi * ratio) - 1) / 2
+    return data * ratio
+
+def get_parametric_img(img):
+    G = np.array(img)
+    for (i, row) in enumerate(img):
+        for (j, pixel) in enumerate(row):
+            G[i][j] = parametric(img[i][j])
+    return G
+
 def one_or_square(n, divider=2):
     return int(n / divider) if n > 1 else 1
 
