@@ -1,25 +1,13 @@
 import math
-
 import cv2
+
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from utilities import \
-                    plot_histograms,\
-                    plot_histogram, \
-                    plot_ghe, \
-                    get_parametric_img, \
-                    low_pass_filter, \
-                    median_filter, \
-                    get_psnr, \
-                    plot_lhe
 
 # ============================================================
 # ================ Problem 1: EDGE DETECTION =================
 # ============================================================
-
-# img = cv2.imread('./hw1_sample_images/sample1.png')
-# img = np.array(img)
 
 # (a) (10 pt) Apply Sobel edge detection to sample1.png. Output the gradient image and its corresponding edge
 # map as result1.png and result2.png, respectively. Please also describe how you select the threshold and how
