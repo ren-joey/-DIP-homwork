@@ -4,6 +4,12 @@ import cv2
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from utilities import \
+                    unsharp_masking, \
+                    img_expend, \
+                    sobel_edge_detection
+from plotter import \
+                    img_plotter
 
 # ============================================================
 # ================ Problem 1: EDGE DETECTION =================
@@ -12,7 +18,29 @@ import matplotlib.pyplot as plt
 # (a) (10 pt) Apply Sobel edge detection to sample1.png. Output the gradient image and its corresponding edge
 # map as result1.png and result2.png, respectively. Please also describe how you select the threshold and how
 # it affects the result.
-print()
+sample1 = cv2.imread('./hw2_sample_images/sample1.png', cv2.IMREAD_GRAYSCALE)
+img1 = np.array(sample1)
+img1_origin_processing = sobel_edge_detection(img1)
+img1_with_unsharp_masking = unsharp_masking(img1)
+img1_with_unsharp_masking = sobel_edge_detection(img1_with_unsharp_masking)
+cv2.imwrite('./result1.png', img1)
+
+img_plotter(
+    [img1_origin_processing, img1_with_unsharp_masking],
+    ['img1_origin_processing', 'img1_with_unsharp_masking']
+)
+
+sample2 = cv2.imread('./hw2_sample_images/sample2.png', cv2.IMREAD_GRAYSCALE)
+img2 = np.array(sample2)
+img2_origin_processing = sobel_edge_detection(img2)
+img2 = unsharp_masking(img2)
+img2_with_unsharp_masking = sobel_edge_detection(img2)
+cv2.imwrite('./result2.png', img2)
+
+img_plotter(
+    [img2_origin_processing, img2_with_unsharp_masking],
+    ['img2_origin_processing', 'img2_with_unsharp_masking']
+)
 
 # (b) (20 pt) Perform Canny edge detection on sample1.png and output the edge map as result3.png. Please also
 # describe how you select the parameters and how they affect the result.
