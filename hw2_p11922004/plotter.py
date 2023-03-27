@@ -1,6 +1,9 @@
 
+import matplotlib
 import matplotlib.pyplot as plt
-def img_plotter (imgs, titles, colormode='gray', dpi=200):
+
+def img_plotter (imgs, titles, colormode='gray', dpi=200, fontsize=10):
+    matplotlib.rc('font', **{'size': fontsize})
     amount = len(imgs)
     plt.figure(dpi=dpi)
     for i in range(amount):
