@@ -34,28 +34,18 @@ img1_with_unsharp_masking = unsharp_masking(img1)
 img1_with_unsharp_masking, _ = sobel_edge_detection(img1_with_unsharp_masking)
 cv2.imwrite('./result1.png', img1_origin_processing)
 
-img_plotter(
-    [img1_origin_processing, img1_with_unsharp_masking],
-    ['img1_origin_processing', 'img1_with_unsharp_masking']
-)
 
 sample2 = cv2.imread('./hw2_sample_images/sample2.png', cv2.IMREAD_GRAYSCALE)
-img2 = np.array(sample2)
-img2_origin_processing, _ = sobel_edge_detection(img2)
+img2 = np.array(sample1)
+img2_origin_processing, _ = sobel_edge_detection(img2, mode=2)
 img2 = unsharp_masking(img2)
-img2_with_unsharp_masking, _ = sobel_edge_detection(img2)
+img2_with_unsharp_masking, _ = sobel_edge_detection(img2, mode=2)
 cv2.imwrite('./result2.png', img2_origin_processing)
-
-img_plotter(
-    [img2_origin_processing, img2_with_unsharp_masking],
-    ['img2_origin_processing', 'img2_with_unsharp_masking']
-)
 
 # (b) (20 pt) Perform Canny edge detection on sample1.png and output the edge map as result3.png. Please also
 # describe how you select the parameters and how they affect the result.
-sample6 = cv2.imread('./hw2_sample_images/sample6.png', cv2.IMREAD_GRAYSCALE)
 img3 = np.array(sample1)
-img3 = canny_edge_detection(img3, plot=True)
+img3 = canny_edge_detection(img3)
 cv2.imwrite('./result3.png', img3)
 
 # (c) (10 pt) Use the Laplacian of Gaussian edge detection to generate the edge map of sample1.png and output it
@@ -63,14 +53,6 @@ cv2.imwrite('./result3.png', img3)
 img4 = np.array(sample1)
 img4 = log_filtering(img4, size=9)
 cv2.imwrite('./result4.png', img4)
-
-sample8 = cv2.imread('./hw2_sample_images/sample8.png', cv2.IMREAD_GRAYSCALE)
-img_b_4 = np.array(sample8)
-img_b_4_size3 = log_filtering(img_b_4)
-img_plotter(
-    [img_b_4_size3],
-    ['log_filtering size3']
-)
 
 # (d) (10 pt) Perform edge crispening on sample2.png and output the result as result5.png. What difference can
 # you observe from sample2.png and result5.png? Please specify the parameters you choose and discuss how
@@ -83,7 +65,7 @@ cv2.imwrite('./result5.png', img5)
 # the Hough transform to result6.png and output the Hough space as result7.png. What lines can you detect
 # by this method?
 img6 = np.array(img5)
-img6 = canny_edge_detection(img6, plot=True)
+img6 = canny_edge_detection(img6)
 line_detection_non_vectorized(img6, num_rhos=50, num_thetas=50, t_count=80)
 cv2.imwrite('./result6.png', img6)
 
@@ -106,10 +88,6 @@ h, w = img8.shape[0], img8.shape[1]
 
 img8 = image_coordinates_transformation(img8)
 img8_log = log_filtering(img8)
-img_plotter(
-    [img8_log],
-    ['img8_log']
-)
 minX, minY, maxX, maxY = math.inf, math.inf, 0, 0
 for x in range(img8_log.shape[1] - 1, -1, -1):
     col = img8_log[:, x].flatten()
@@ -133,10 +111,6 @@ for x in range(img8_log.shape[1] - 1, -1, -1):
                 maxY = y
 
 clip = img8[minY:maxY, minX:maxX]
-img_plotter(
-    [clip],
-    ['clip']
-)
 
 #   x    y        u    v
 # (0, 0)     -> (0, 0)

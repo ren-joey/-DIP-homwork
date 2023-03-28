@@ -88,20 +88,32 @@ def gaussian_filter(img, size=3, sigma=1.4):
     return filter_processor(img, filter, autodivide=False)
 
 
-def sobel_edge_detection(img):
+def sobel_edge_detection(img, mode=1):
     G, w, h = black_img_copier(img)
     derivative_map = np.full((h, w), 0.)
     img, expend = img_expend(img, 3, mode='zero')
-    xFilter = [
-        [-1, -2, -1],
-        [0, 0, 0],
-        [1, 2, 1]
-    ]
-    yFilter = [
-        [-1, 0, 1],
-        [-2, 0, 2],
-        [-1, 0, 1]
-    ]
+    if mode == 1:
+        xFilter = [
+            [-1, -2, -1],
+            [0, 0, 0],
+            [1, 2, 1]
+        ]
+        yFilter = [
+            [-1, 0, 1],
+            [-2, 0, 2],
+            [-1, 0, 1]
+        ]
+    elif mode == 2:
+        xFilter = [
+            [-1, 0, 1],
+            [-1, 0, 1],
+            [-1, 0, 1]
+        ]
+        yFilter = [
+            [1, 1, 1],
+            [0, 0, 0],
+            [-1, -1, -1]
+        ]
     for i in range(expend, expend + h):
         for j in range(expend, expend + w):
             xg = np.sum(
@@ -218,7 +230,6 @@ def gaussian_filter(img, size=3, sigma=1.4):
 
 def log_filtering(img, size=3, sigma=1.4):
     filter = log_kernel(size=size, sigma=sigma)
-    print(filter)
     return filter_processor(img, filter, autodivide=False)
 
 
@@ -296,5 +307,5 @@ def line_detection_non_vectorized(edge_image, num_rhos=180, num_thetas=180, t_co
     subplot.invert_xaxis()
 
     subplot.title.set_text("Hough Space")
-    plt.show()
+    # plt.show()
     figure.savefig('./result7.png')
