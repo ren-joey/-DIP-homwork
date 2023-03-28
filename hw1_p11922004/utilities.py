@@ -21,7 +21,7 @@ def plot_histograms(
 
     plt.tight_layout(pad=0.5)
     plt.savefig(filename)
-    # plt.show()
+    plt.show()
     plt.close()
 
 def plot_histogram(
@@ -38,7 +38,7 @@ def plot_histogram(
     plt.ylabel(ylabel)
     plt.tight_layout(pad=0.5)
     plt.savefig(filename)
-    # plt.show()
+    plt.show()
     plt.close()
 
 def get_histogram(img):
