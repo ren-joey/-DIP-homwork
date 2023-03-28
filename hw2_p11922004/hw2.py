@@ -32,7 +32,7 @@ img1 = np.array(sample1)
 img1_origin_processing, _ = sobel_edge_detection(img1)
 img1_with_unsharp_masking = unsharp_masking(img1)
 img1_with_unsharp_masking, _ = sobel_edge_detection(img1_with_unsharp_masking)
-cv2.imwrite('./result1.png', img1)
+cv2.imwrite('./result1.png', img1_origin_processing)
 
 img_plotter(
     [img1_origin_processing, img1_with_unsharp_masking],
@@ -44,7 +44,7 @@ img2 = np.array(sample2)
 img2_origin_processing, _ = sobel_edge_detection(img2)
 img2 = unsharp_masking(img2)
 img2_with_unsharp_masking, _ = sobel_edge_detection(img2)
-cv2.imwrite('./result2.png', img2)
+cv2.imwrite('./result2.png', img2_origin_processing)
 
 img_plotter(
     [img2_origin_processing, img2_with_unsharp_masking],
