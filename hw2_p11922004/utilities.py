@@ -47,17 +47,25 @@ def filter_processor(img, filter, autodivide=True):
     return G
 
 
-def unsharp_masking(img):
-    filter = np.array([
-        [0, -1, 0],
-        [-1, 5, -1],
-        [0, -1, 0]
-    ])
-    # filter = np.array([
-    #     [1, -2, 1],
-    #     [-2, 4, -2],
-    #     [1, -2, 1]
-    # ])
+def unsharp_masking(img, mode=1):
+    if mode == 1:
+        filter = np.array([
+            [0, -1, 0],
+            [-1, 5, -1],
+            [0, -1, 0]
+        ])
+    elif mode == 2:
+        filter = np.array([
+            [1, -2, 1],
+            [-2, 5, -2],
+            [1, -2, 1]
+        ])
+    elif mode == 3:
+        filter = np.array([
+            [1, -3, 1],
+            [-3, 9, -3],
+            [1, -3, 1]
+        ])
     return filter_processor(img, filter)
 
 
@@ -194,7 +202,7 @@ def canny_edge_detection(img, size=3, sigma=1.4, dist=2, threshold=[30, 150], pl
     return img_result
 
 
-def log_kernel(size=3, sigma=1.4):
+def log_kernel(size=3, sigma=1.4, mode=1):
     # kernel = np.fromfunction(lambda x, y: \
     #                 (1 / (math.pi * sigma ** 4)) \
     #                 * (1 - ((x - (size - 1) / 2) ** 2 + (y - (size - 1) / 2) ** 2) / (2 * sigma ** 2))
@@ -203,11 +211,18 @@ def log_kernel(size=3, sigma=1.4):
     #                 (size, size)
     #             )
     #
-    kernel = np.array([
-        [-1, -1, -1],
-        [-1, 8, -1],
-        [-1, -1, -1]
-    ])
+    if mode == 1:
+        kernel = np.array([
+            [-1, -1, -1],
+            [-1, 8, -1],
+            [-1, -1, -1]
+        ])
+    elif mode == 2:
+        kernel = np.array([
+            [0, -1, 0],
+            [-1, 4, -1],
+            [0, -1, 0]
+        ])
     return kernel
 
 
@@ -216,8 +231,8 @@ def gaussian_filter(img, size=3, sigma=1.4):
     return filter_processor(img, filter, autodivide=False)
 
 
-def log_filtering(img, size=3, sigma=1.4):
-    filter = log_kernel(size=size, sigma=sigma)
+def log_filtering(img, size=3, sigma=1.4, mode=1):
+    filter = log_kernel(size=size, sigma=sigma, mode=mode)
     print(filter)
     return filter_processor(img, filter, autodivide=False)
 

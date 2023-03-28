@@ -27,65 +27,96 @@ from plotter import img_plotter
 # (a) (10 pt) Apply Sobel edge detection to sample1.png. Output the gradient image and its corresponding edge
 # map as result1.png and result2.png, respectively. Please also describe how you select the threshold and how
 # it affects the result.
-sample1 = cv2.imread('./hw2_sample_images/sample1.png', cv2.IMREAD_GRAYSCALE)
-img1 = np.array(sample1)
-img1_origin_processing, _ = sobel_edge_detection(img1)
-img1_with_unsharp_masking = unsharp_masking(img1)
-img1_with_unsharp_masking, _ = sobel_edge_detection(img1_with_unsharp_masking)
-cv2.imwrite('./result1.png', img1_origin_processing)
-
-img_plotter(
-    [img1_origin_processing, img1_with_unsharp_masking],
-    ['img1_origin_processing', 'img1_with_unsharp_masking']
-)
-
-sample2 = cv2.imread('./hw2_sample_images/sample2.png', cv2.IMREAD_GRAYSCALE)
-img2 = np.array(sample2)
-img2_origin_processing, _ = sobel_edge_detection(img2)
-img2 = unsharp_masking(img2)
-img2_with_unsharp_masking, _ = sobel_edge_detection(img2)
-cv2.imwrite('./result2.png', img2_origin_processing)
-
-img_plotter(
-    [img2_origin_processing, img2_with_unsharp_masking],
-    ['img2_origin_processing', 'img2_with_unsharp_masking']
-)
-
-# (b) (20 pt) Perform Canny edge detection on sample1.png and output the edge map as result3.png. Please also
-# describe how you select the parameters and how they affect the result.
-sample6 = cv2.imread('./hw2_sample_images/sample6.png', cv2.IMREAD_GRAYSCALE)
-img3 = np.array(sample1)
-img3 = canny_edge_detection(img3, plot=True)
-cv2.imwrite('./result3.png', img3)
-
-# (c) (10 pt) Use the Laplacian of Gaussian edge detection to generate the edge map of sample1.png and output it
-# as result4.png. Compare result2.png result3.png and result4.png and discuss on these three results.
-img4 = np.array(sample1)
-img4 = log_filtering(img4, size=9)
-cv2.imwrite('./result4.png', img4)
-
-sample8 = cv2.imread('./hw2_sample_images/sample8.png', cv2.IMREAD_GRAYSCALE)
-img_b_4 = np.array(sample8)
-img_b_4_size3 = log_filtering(img_b_4)
-img_plotter(
-    [img_b_4_size3],
-    ['log_filtering size3']
-)
-
-# (d) (10 pt) Perform edge crispening on sample2.png and output the result as result5.png. What difference can
-# you observe from sample2.png and result5.png? Please specify the parameters you choose and discuss how
-# they affect the result.
-img5 = np.array(sample2)
-img5 = unsharp_masking(img5)
-cv2.imwrite('./result5.png', img5)
+# sample1 = cv2.imread('./hw2_sample_images/sample1.png', cv2.IMREAD_GRAYSCALE)
+# img1 = np.array(sample1)
+# img1_origin_processing, _ = sobel_edge_detection(img1)
+# img1_with_unsharp_masking = unsharp_masking(img1)
+# img1_with_unsharp_masking, _ = sobel_edge_detection(img1_with_unsharp_masking)
+# cv2.imwrite('./result1.png', img1_origin_processing)
+#
+# img_plotter(
+#     [img1_origin_processing, img1_with_unsharp_masking],
+#     ['img1_origin_processing', 'img1_with_unsharp_masking']
+# )
+#
+# sample2 = cv2.imread('./hw2_sample_images/sample2.png', cv2.IMREAD_GRAYSCALE)
+# img2 = np.array(sample2)
+# img2_origin_processing, _ = sobel_edge_detection(img2)
+# img2 = unsharp_masking(img2)
+# img2_with_unsharp_masking, _ = sobel_edge_detection(img2)
+# cv2.imwrite('./result2.png', img2_origin_processing)
+#
+# img_plotter(
+#     [img2_origin_processing, img2_with_unsharp_masking],
+#     ['img2_origin_processing', 'img2_with_unsharp_masking']
+# )
+#
+# # (b) (20 pt) Perform Canny edge detection on sample1.png and output the edge map as result3.png. Please also
+# # describe how you select the parameters and how they affect the result.
+# sample6 = cv2.imread('./hw2_sample_images/sample6.png', cv2.IMREAD_GRAYSCALE)
+# img3 = np.array(sample1)
+# img3_1 = canny_edge_detection(img3, plot=True, threshold=[10, 100])
+# img3_2 = canny_edge_detection(img3, plot=True, threshold=[30, 150])
+# img3_3 = canny_edge_detection(img3, plot=True, threshold=[50, 200])
+# img3_4 = canny_edge_detection(img3, plot=True, threshold=[100, 220])
+# img3_5 = canny_edge_detection(img3, plot=True, threshold=[150, 240])
+# img_plotter(
+#     [img3_1, img3_2, img3_3, img3_4, img3_5],
+#     ['threshold=[10, 100]', 'threshold=[30, 150]', 'threshold=[50, 200]', 'threshold=[100, 220]', 'threshold=[150, 240]'],
+#     fontsize=4
+# )
+# cv2.imwrite('./result3.png', img3_2)
+#
+# # (c) (10 pt) Use the Laplacian of Gaussian edge detection to generate the edge map of sample1.png and output it
+# # as result4.png. Compare result2.png result3.png and result4.png and discuss on these three results.
+# img4 = np.array(sample1)
+# img4 = log_filtering(img4, size=9, mode=1)
+# img4_2 = log_filtering(img4, size=9, mode=2)
+# img_plotter(
+#     [img4, img4_2],
+#     ['mode1', 'mode2']
+# )
+# cv2.imwrite('./result4.png', img4)
+#
+# sample8 = cv2.imread('./hw2_sample_images/sample8.png', cv2.IMREAD_GRAYSCALE)
+# img_b_4 = np.array(sample8)
+# img_b_4_size3 = log_filtering(img_b_4)
+# img_plotter(
+#     [img_b_4_size3],
+#     ['log_filtering size3']
+# )
+#
+# # (d) (10 pt) Perform edge crispening on sample2.png and output the result as result5.png. What difference can
+# # you observe from sample2.png and result5.png? Please specify the parameters you choose and discuss how
+# # they affect the result.
+# img5 = np.array(sample2)
+# img5_1 = unsharp_masking(img5)
+# img5_2 = unsharp_masking(img5, mode=2)
+# img5_3 = unsharp_masking(img5, mode=3)
+# img_plotter(
+#     [img5_1, img5_2, img5_3],
+#     ['mode1', 'mode2', 'mode3']
+# )
+# cv2.imwrite('./result5.png', img5_1)
+# cv2.imwrite('./result5-2.png', img5_2)
+# cv2.imwrite('./result5-3.png', img5_3)
 
 # (e) (Bonus) Perform Canny edge detection on result5.png and output the edge map as result6.png. Then apply
 # the Hough transform to result6.png and output the Hough space as result7.png. What lines can you detect
 # by this method?
-img6 = np.array(img5)
-img6 = canny_edge_detection(img6, plot=True)
-line_detection_non_vectorized(img6, num_rhos=50, num_thetas=50, t_count=80)
-cv2.imwrite('./result6.png', img6)
+# img6 = np.array(img5)
+# img6 = canny_edge_detection(img6, plot=True)
+# line_detection_non_vectorized(img6, num_rhos=50, num_thetas=50, t_count=80)
+# cv2.imwrite('./result6.png', img6)
+
+sample3 = cv2.imread('./hw2_sample_images/sample3.png', cv2.IMREAD_GRAYSCALE)
+img6_2 = np.array(sample3)
+img6_2 = canny_edge_detection(img6_2, plot=True)
+line_detection_non_vectorized(img6_2, num_rhos=50, num_thetas=50, t_count=80)
+img_plotter(
+    [img6_2],
+    ['Hough space']
+)
 
 # ============================================================
 # ============ Problem 2: GEOMETRICAL MODIFICATION ===========
@@ -100,7 +131,6 @@ cv2.imwrite('./result6.png', img6)
 # etc.)
 
 # https://eeweb.engineering.nyu.edu/~yao/EL5123/lecture12_ImageWarping.pdf
-sample3 = cv2.imread('./hw2_sample_images/sample3.png', cv2.IMREAD_GRAYSCALE)
 img8 = np.array(sample3)
 h, w = img8.shape[0], img8.shape[1]
 
@@ -182,6 +212,10 @@ def scaler(x, y):
             return 255
 
 img8_y_scaled = mod_img_by_fun(img8, scaler)
+img_plotter(
+    [img8_y_scaled],
+    ['img8_y_scaled']
+)
 
 def geo_mod(x, y):
     if x > minX:
