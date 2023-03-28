@@ -6,7 +6,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from utilities import \
                     plot_histograms,\
-                    plot_histogram, \
                     plot_ghe, \
                     get_parametric_img, \
                     low_pass_filter, \
