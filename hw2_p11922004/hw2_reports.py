@@ -40,7 +40,7 @@ img_plotter(
 )
 
 sample2 = cv2.imread('./hw2_sample_images/sample2.png', cv2.IMREAD_GRAYSCALE)
-img2 = np.array(sample2)
+img2 = np.array(sample1)
 img2_origin_processing, _ = sobel_edge_detection(img2)
 img2 = unsharp_masking(img2)
 img2_with_unsharp_masking, _ = sobel_edge_detection(img2)
