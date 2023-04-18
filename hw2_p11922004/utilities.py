@@ -74,7 +74,7 @@ def gaussian_kernel(size, sigma, twoDimensional=True):
 
 
 def gaussian_kernel(size, sigma=1.4, twoDimensional=True):
-    if twoDimensional:
+    if twoDimensional:1
         kernel = np.fromfunction(lambda x, y: (1 / (2 * math.pi * sigma ** 2)) * math.e ** (
                     (-1 * ((x - (size - 1) / 2) ** 2 + (y - (size - 1) / 2) ** 2)) / (2 * sigma ** 2)), (size, size))
     else:

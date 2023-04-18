@@ -2,12 +2,12 @@ import math
 import numpy as np
 from plotter import img_plotter
 import matplotlib.pyplot as plt
-
-
+import sys
+sys.setrecursionlimit(700 * 500 * 4)
 def black_img_copier(img):
     width = img.shape[1]
     height = img.shape[0]
-    G = np.full((height, width), 0)
+    G = np.full((height, width), 0, dtype=np.uint8)
     return G, width, height
 
 
@@ -32,6 +32,21 @@ def img_expend(img, filtersize, mode='odd'):
             img = np.append(img, arr, axis=1)
     return img, expend
 
+# def img_continuous_filling(img, _x, _y, color=255, new_color=0):
+#     def fill(x, y):
+#         if img[y][x] == color:
+#             img[y][x] = new_color
+#
+#         if y > 0 and img[y-1][x] == color:
+#             fill(x, y - 1)
+#         if y < img.shape[0] - 1 and img[y+1][x] == color:
+#             fill(x, y + 1)
+#         if x > 0 and img[y][x-1] == color:
+#             fill(x - 1, y)
+#         if x < img.shape[1] - 1 and img[y][x+1] == color:
+#             fill(x + 1, y)
+#
+#     fill(_x, _y)
 
 def filter_processor(img, filter, autodivide=True):
     filtersize = filter.shape[0]
