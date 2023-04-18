@@ -48,17 +48,20 @@ def img_expend(img, filtersize, mode='odd'):
 #
 #     fill(_x, _y)
 
-def filter_processor(img, filter, autodivide=True):
+def filter_processor(img, filter, divider=None, single_array=False):
     filtersize = filter.shape[0]
     G, width, height = black_img_copier(img)
     img, expend = img_expend(img, filtersize=filtersize)
 
+    if divider == None:
+        divider = 1 / np.sum(filter)
+
     for i in range(expend, expend + height):
         for j in range(expend, expend + width):
-            G[i - expend][j - expend] = \
-                np.sum(
-                    img[i - expend:i + expend + 1, j - expend:j + expend + 1] * filter
-                ) / (np.sum(filter) if autodivide else 1)
+            val = np.sum(img[i - expend:i + expend + 1, j - expend:j + expend + 1] * filter) * divider
+            val = abs(val)
+            G[i - expend][j - expend] = val if single_array is False else np.array([val])
+
     return G
 
 
