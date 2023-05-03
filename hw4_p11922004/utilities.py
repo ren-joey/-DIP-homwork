@@ -4,6 +4,9 @@ from plotter import img_plotter
 import matplotlib.pyplot as plt
 import sys
 sys.setrecursionlimit(700 * 500 * 4)
+
+inverter = np.vectorize(lambda x: 255 if x == 0 else 0)
+
 def black_img_copier(img):
     width = img.shape[1]
     height = img.shape[0]
