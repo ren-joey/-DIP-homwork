@@ -106,7 +106,7 @@ def gaussian_kernel(size, sigma=1.4, twoDimensional=True):
 
 def gaussian_filter(img, size=3, sigma=1.4):
     filter = gaussian_kernel(size=size, sigma=sigma)
-    return filter_processor(img, filter, autodivide=False)
+    return filter_processor(img, filter, divider=1)
 
 
 def sobel_edge_detection(img, mode=1):
@@ -246,12 +246,12 @@ def log_kernel(size=3, sigma=1.4):
 
 def gaussian_filter(img, size=3, sigma=1.4):
     filter = gaussian_kernel(size=size, sigma=sigma)
-    return filter_processor(img, filter, autodivide=False)
+    return filter_processor(img, filter, divider=1)
 
 
 def log_filtering(img, size=3, sigma=1.4):
     filter = log_kernel(size=size, sigma=sigma)
-    return filter_processor(img, filter, autodivide=False)
+    return filter_processor(img, filter, divider=1)
 
 
 # ============================================================

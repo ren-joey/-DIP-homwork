@@ -64,25 +64,12 @@ def unsharp_masking(img):
     return filter_processor(img, filter)
 
 
-def gaussian_kernel(size, sigma, twoDimensional=True):
-    """
-    Creates a gaussian kernel with given sigma and size, 3rd argument is for choose the kernel as 1d or 2d
-    """
+def gaussian_kernel(size, sigma=1.4, twoDimensional=True):
     if twoDimensional:
         kernel = np.fromfunction(lambda x, y: (1 / (2 * math.pi * sigma ** 2)) * math.e ** (
                     (-1 * ((x - (size - 1) / 2) ** 2 + (y - (size - 1) / 2) ** 2)) / (2 * sigma ** 2)), (size, size))
     else:
         kernel = np.fromfunction(lambda x: math.e ** ((-1 * (x - (size - 1) / 2) ** 2) / (2 * sigma ** 2)), (size,))
-    return kernel / np.sum(kernel)
-
-
-def gaussian_kernel(size, sigma=1.4, twoDimensional=True):
-    if twoDimensional:1
-        kernel = np.fromfunction(lambda x, y: (1 / (2 * math.pi * sigma ** 2)) * math.e ** (
-                    (-1 * ((x - (size - 1) / 2) ** 2 + (y - (size - 1) / 2) ** 2)) / (2 * sigma ** 2)), (size, size))
-    else:
-        kernel = np.fromfunction(lambda x: math.e ** ((-1 * (x - (size - 1) / 2) ** 2) / (2 * sigma ** 2)),
-                                 (size, size))
     return kernel / np.sum(kernel)
 
 

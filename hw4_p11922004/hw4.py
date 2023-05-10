@@ -22,7 +22,7 @@ from utilities import \
     line_detection_non_vectorized, \
     filter_processor, \
     inverter
-# from hw4_utilities import
+# from hw4_utilities import FFT
 from plotter import img_plotter
 
 sample1 = cv2.imread('./hw4_sample_images/sample1.png', cv2.IMREAD_GRAYSCALE)
@@ -93,7 +93,10 @@ def I_extend_by_2 (I, _I):
     return target
 
 def problem_1a():
-    I2 = np.array([[1, 2], [3, 0]])
+    I2 = np.array([
+        [1, 2],
+        [3, 0]
+    ])
     T2 = I_to_T(I2)
     img1 = np.array(sample1)
     res1_16 = dithering(img1, T2, amplitude=16)
@@ -110,21 +113,33 @@ def problem_1a():
 
     cv2.imwrite('./result1.png', res1_32)
 
-# problem_1a()
+problem_1a()
 
 # (b) (15 pt) Expand the dither matrix I2 to I256 (256 × 256) and use it to perform dithering.
 # Output the result as result2.png.
 # Compare result1.png and result2.png along with some discussions.
 
 def problem_1b():
+    img1 = np.array(sample1)
     I2 = np.array([[1, 2], [3, 0]])
+    Is = []
     times = int(math.log(256, 2))
     I256 = np.array(I2)
     for i in range(1, times):
         I256 = I_extend_by_2(I256, I2)
-    T256 = I_to_T(I256)
+        Is.append(I256)
 
-    img1 = np.array(sample1)
+    results = []
+    for I in Is:
+        T = I_to_T(I)
+        res = dithering(img1, T, amplitude=64)
+        results.append(res)
+    img_plotter(
+        results,
+        ['4','8','16','32','64','128','256']
+    )
+
+    T256 = I_to_T(I256)
     res2_16 = dithering(img1, T256, amplitude=16)
     res2_32 = dithering(img1, T256, amplitude=32)
     res2_64 = dithering(img1, T256, amplitude=64)
@@ -139,7 +154,7 @@ def problem_1b():
 
     cv2.imwrite('./result2.png', res2_64)
 
-# problem_1b()
+problem_1b()
 
 # (c) (25 pt) Perform error diffusion with Floyd-Steinberg and Jarvis’ patterns on sample1.png.
 # Output the results as result3.png and result4.png, respectively.
@@ -148,7 +163,7 @@ def problem_1b():
 # You can find some masks here (from lecture slide 06. p21)
 
 def error_diffusion(img, mode='floyd_steinberg'):
-    # floyd_steinberg | jarvis | stucki
+    # floyd_steinberg | jarvis | stucki | burkes
     img = np.array(img)
     if mode == 'floyd_steinberg':
         m_ltr = np.array([
@@ -181,6 +196,16 @@ def error_diffusion(img, mode='floyd_steinberg'):
             [2/42, 4/42, 8/42, 4/42, 2/42],
             [1/42, 2/42, 4/42, 2/42, 1/42]
         ])
+    elif mode == 'burkes':
+        m_ltr = np.array([
+            [None, None, None, 8/32, 4/32],
+            [2/32, 4/32, 8/32, 4/32, 2/32]
+        ])
+        m_rtl = np.array([
+            [8/32, 4/32, None, None, None],
+            [2/32, 4/32, 8/32, 4/32, 2/32]
+        ])
+
     else:
         raise Exception("Parameter 'mode' only accepts 'floyd_steinberg', 'jarvis' or 'stucki'")
 
@@ -219,16 +244,19 @@ def problem_1c():
     img_floyd_steinberg = error_diffusion(img1, mode='floyd_steinberg')
     img_jarvis = error_diffusion(img1, mode='jarvis')
     img_stucki = error_diffusion(img1, mode='stucki')
+    img_burkes = error_diffusion(img1, mode='burkes')
 
     img_plotter(
-        [img_floyd_steinberg, img_jarvis, img_stucki],
-        ['floyd_steinberg', 'jarvis', 'stucki']
+        [img_floyd_steinberg, img_jarvis, img_stucki, img_burkes],
+        ['floyd_steinberg', 'jarvis', 'stucki', 'burkes'],
+        dpi=400,
+        fontsize=2
     )
 
     cv2.imwrite('./result3.png', img_floyd_steinberg)
     cv2.imwrite('./result4.png', img_jarvis)
 
-# problem_1c()
+problem_1c()
 
 # ============================================================
 # ================ Problem 2: FREQUENCY DOMAIN ===============
@@ -239,16 +267,150 @@ def problem_1c():
 # Please also perform 'inappropriate' image sampling which results in aliasing in the sampled image.
 # Output the result as result5.png, specify the sampling rate you choose and discuss how it affects the resultant image.
 
-# cv2.imwrite('./result5.png', )
+def sampling(img, period):
+    freq = 1 / period
+    G = np.full((round(img.shape[0] * freq), round(img.shape[1] * freq)), 0)
+
+    for y in range(G.shape[0]):
+        for x in range(G.shape[1]):
+            G[y][x] = img[round(y * period)][round(x * period)]
+
+    img_plotter(
+        [G],
+        [f'period={period}']
+    )
+
+    return G
+def problem_2a():
+    img2 = np.array(sample2)
+    periods = [2, 3, 4, 5, 6]
+    results = []
+    for p in periods:
+        results.append(sampling(img2, p))
+
+    cv2.imwrite('./result5.png', results[2])
+
+
+problem_2a()
 
 # (b) (20 pt) Please perform the Gaussian high-pass filter in the frequency domain on sample2.png
 # and transform the result back to the pixel domain by inverse Fourier transform. Save the resultant
 # image as result6.png.
 
-# cv2.imwrite('./result6.png', )
+def frequency_domain_gaussian_high_pass(img, d0=30):
+    img = np.array(img)
+    M = img.shape[0]
+    N = img.shape[1]
+    e = np.exp(1)
+    img_fft = np.fft.fft2(img)
+    img_centered_fft = np.fft.fftshift(img_fft)
+    # norm = np.log(1+np.abs(img_centered_fft))
+    # norm_img_centered_fft = (norm - np.min(norm))/(np.max(norm) - np.min(norm))
+    D = np.zeros(img.shape)
+
+    for y in range(D.shape[0]):
+        for x in range(D.shape[1]):
+            val = ((y - M / 2) ** 2 + (x - N / 2) ** 2) ** 0.5
+            D[y][x] = 1 - (e ** -((val ** 2) / (2 * d0 ** 2)))
+            # val = norm_img_centered_fft[y][x]
+            # # print(val)
+            # filter[y][x] = pow(e, -(val**2/2*d0**2))
+
+    img_centered_fft *= D
+    ifft_img = np.fft.ifftshift(img_centered_fft)
+    ifft_img = np.abs(np.fft.ifft2(ifft_img))
+    plt.imshow(ifft_img, 'gray')
+    plt.show()
+
+    plt.imshow(D, 'gray')
+    plt.title(f'd0={d0}')
+    plt.show()
+
+    return ifft_img
+
+def problem_2b():
+    img2 = np.array(sample2)
+    img2 = frequency_domain_gaussian_high_pass(img2, 50)
+    img2_b = gaussian_filter(img2)
+
+    img_plotter(
+        [img2_b],
+        ['spatial_gaussian_filtering']
+    )
+
+    cv2.imwrite('./result6.png', img2)
+
+problem_2b()
+
 
 # (c) (20 pt) Try to remove the undesired pattern on sample3.png
 # with Fourier transform and output it as result7.png.
 # Please also describe how you accomplished the task.
 
-# cv2.imwrite('./result7.png', )
+def unsharp_masking(img):
+    filter = np.array([
+        [0, -1, 0],
+        [-1, 5, -1],
+        [0, -1, 0]
+    ])
+    # filter = np.array([
+    #     [1, -2, 1],
+    #     [-2, 4, -2],
+    #     [1, -2, 1]
+    # ])
+    return filter_processor(img, filter)
+
+def problem_2c():
+    img3 = np.array(sample3)
+    # print(img3.shape)
+    # centered_img = FFT.computeCenteredImage(img3)
+    # print(centered_img.shape)
+    # fft_centered_img = FFT.computeFFT(centered_img)
+    # # de_centered_img = FFT.computeCenteredImage(centered_img)
+    # img_plotter(
+    #     [centered_img, fft_centered_img],
+    #     ['centered_img', 'fft_centered_img']
+    # )
+
+    img3_fft = np.fft.fft2(img3)
+    plt.imshow(np.log(1 + np.abs(img3_fft)), 'gray')
+    plt.show()
+    # img_plotter(
+    #     [np.log(1 + np.abs(img3_fft))],
+    #     ['img3_fft']
+    # )
+    img3_centered_fft = np.fft.fftshift(img3_fft)
+    plt.imshow(np.log(1+np.abs(img3_centered_fft)), 'gray')
+    plt.show()
+
+    # (874, 726)
+    # print(round(np.max(img3_centered_fft)), round(np.min(img3_centered_fft)))
+    # norm = np.log(1 + np.abs(img3_centered_fft))
+    # print(np.max(norm), np.min(norm))
+
+    for y in range(img3_centered_fft.shape[0]):
+        for x in range(img3_centered_fft.shape[1]):
+            # if 356 < x < 370:
+            if 356 < x < 370 and (y > 475 or y < 380):
+                img3_centered_fft[y][x] = 0
+
+            # if 430 < y < 444:
+            if 430 < y < 444 and (x > 400 or x < 323):
+                img3_centered_fft[y][x] = 0
+    norm = np.log(1 + np.abs(img3_centered_fft))
+    # print(np.max(norm), np.min(norm))
+
+    plt.imshow(norm, 'gray')
+    plt.show()
+
+    filtered_img = np.fft.ifftshift(img3_centered_fft)
+    filtered_img = np.abs(np.fft.ifft2(filtered_img))
+    sharped_filtered_img = unsharp_masking(filtered_img)
+
+    # print(np.max(filtered_img), np.min(filtered_img))
+    plt.imshow(filtered_img, 'gray')
+    plt.show()
+    cv2.imwrite('./result7.png', sharped_filtered_img)
+
+problem_2c()
+
